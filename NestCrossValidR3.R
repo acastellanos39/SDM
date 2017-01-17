@@ -35,7 +35,7 @@ BETA <- c("betamultiplier=0.5", "betamultiplier=1", "betamultiplier=1.5", "betam
 
 FEAT <- rbind(c("linear=true", "quadratic=false", "product=false", "threshold=false", "hinge=false"), c("linear=true", "quadratic=true", "product=false", "threshold=false", "hinge=false"), c("linear=false", "quadratic=false", "product=false", "threshold=false", "hinge=true"), c("linear=true", "quadratic=true", "product=false", "threshold=false", "hinge=true"), c("linear=true", "quadratic=true", "product=true", "threshold=false", "hinge=true"), c("linear=true", "quadratic=true", "product=true", "threshold=true", "hinge=true"))
 
-NC <- nested.cross(2, PRES[, 1:2], ABSV[, 1:2], 3, PREDI, BETA[1:2], FEAT[1:2, ], EXT)
+NC <- nested.cross(2, PRES[, 1:2], ABSV[, 1:2], 3, PREDI, BETA[1:2], FEAT[1:2, ], EXT) #example run to make sure that it works without taking too much time
 
 ##function to perform a repeated, nested K-fold cross validation (inner loop uses a subset of the training data to determine the parameter values used in the outer loop). 
 #n == number of repetitions
