@@ -1,6 +1,42 @@
+library(biomod2)
+library(randomForest)
+library(Hmisc)
+library(dismo)
+library(maptools)
+library(raster)
+library(ggplot2)
+library(rgbif)
+library(sp)
+library(rgdal)
+library(vegan)
+library(adehabitatHR)
+library(rgeos)
+library(gbm)
+library(ENMeval)
+data(wrld_simpl)
+#don't use library(rJava) because it is annoying and you only want to have it when you absolutely need it (to run Maxent)
+
+setwd("~/Desktop/SDM") #or whatever you want the working directory to be
+
+PRES <- read.csv("presence_environmentalsampling.csv")[, -1]
+#OR
+PRES <- read.csv("presence_spatialsampling.csv")[, -1]
+#OR
+PRES <- read.csv("presence_nosampling.csv")[, -1]
+
+ABSV <- read.csv("background_bufferedpoints.csv")[, -1]
+EXT <- extent(-35, 40, -15, 15)
+
+PRED <- list.files(path = "~/Desktop/SDM/bio_2-5m_bil", pattern = "bil", full.names = T) #.hdr will not import
+PRED <- stack(PRED) 
+PREDI <- stack(PRED$bio2, PRED$bio4, PRED$bio6, PRED$bio8, PRED$bio9, PRED$bio12, PRED$bio14, PRED$bio16, PRED$bio18, PRED$bio19, PRED$bio15, PRED$bio3, PRED$bio7)
+
+BETA <- c("betamultiplier=0.5", "betamultiplier=1", "betamultiplier=1.5", "betamultiplier=2", "betamultiplier=2.5", "betamultiplier=3", "betamultiplier=3.5", "betamultiplier=4", "betamultiplier=4.5", "betamultiplier=5", "betamultiplier=5.5", "betamultiplier=6")
+
+FEAT <- rbind(c("linear=true", "quadratic=false", "product=false", "threshold=false", "hinge=false"), c("linear=true", "quadratic=true", "product=false", "threshold=false", "hinge=false"), c("linear=false", "quadratic=false", "product=false", "threshold=false", "hinge=true"), c("linear=true", "quadratic=true", "product=false", "threshold=false", "hinge=true"), c("linear=true", "quadratic=true", "product=true", "threshold=false", "hinge=true"), c("linear=true", "quadratic=true", "product=true", "threshold=true", "hinge=true"))
+
 NC <- nested.cross(2, PRES[, 1:2], ABSV[, 1:2], 3, PREDI, BETA[1:2], FEAT[1:2, ], EXT)
 
-##requires dismo, rJava, ENMeval
 ##function to perform a repeated, nested K-fold cross validation (inner loop uses a subset of the training data to determine the parameter values used in the outer loop). 
 #n == number of repetitions
 #presence == coordinates of presence data
@@ -74,3 +110,5 @@ write.csv(stats.avg, "results_avg.csv") #writes the average of all runs (at the 
 }
 list(stats.all, stats.avg)
 }
+
+
