@@ -86,7 +86,6 @@ aicc <- cbind(as.vector(sapply(fcnames, rep, length(beta))), rep(beta, length(fc
 min.fc <-  round(which.min(aicc[, 3])/length(beta) + (0.51 - 1/length(beta))) #determines the lowest AICc value of the runs
 m <- maxent(predictors, PTRAIN, BTRAIN, args = c(fclass[min.fc, 1], fclass[min.fc, 2], fclass[min.fc, 3], fclass[min.fc, 4], fclass[min.fc, 5], as.character(aicc[which.min(aicc[, 3]), 2]))) #runs maxent with these parameter values
 me <- evaluate(PTEST, BTEST, m, predictors)
-mp <- predict(predictors, m, ext = extent, progress = '')
 if (i == 1) {
 stats <- c(me@auc, m@results["Training.AUC", ], abs(me@auc - m@results["Training.AUC", ]), abs(sum(me@presence > as.data.frame(m@results)["Minimum.training.presence.logistic.threshold", ])/length(me@presence) - 1), m@results["Minimum.training.presence.logistic.threshold", ], aicc[which.min(aicc[, 3]), 1:2]) #for each outer loop run, gives test AUC, training AUC, the difference between the two, omission rate (using the lowest presence threshold), the lowest presence threshold, and the chosen parameters used
 }
